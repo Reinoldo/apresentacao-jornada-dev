@@ -95,6 +95,14 @@
     max-width: 14ch;
   }
 
+  .tweet-shot {
+    margin-top: 1.75rem;
+    width: min(100%, 640px);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+
   .subtitle {
     margin-top: 1.2rem;
     font-size: clamp(1.05rem, 2vw, 1.35rem);
@@ -247,14 +255,6 @@
     margin-bottom: 1rem;
   }
 
-  .quote-attr {
-    color: var(--accent-2);
-    font-weight: 700;
-    letter-spacing: .04em;
-  }
-
-  .philo-grid .card h3 { color: var(--pink); }
-
   .big-q {
     font-size: clamp(1.6rem, 3.5vw, 2.6rem);
     font-weight: 800;
@@ -339,7 +339,7 @@
     <section class="slide title-slide active" data-title="Capa">
       <div class="kicker">Papo com adolescentes · Frontend · IA</div>
       <h1>Como eu construo telas (e uso IA sem “desligar o cérebro”)</h1>
-      <p class="subtitle">Reinoldo Sommer · desenvolvedor front-end<br>GitHub: Reinoldo · org: kobtechbr · projeto: app-cartao</p>
+      <p class="subtitle">Reinoldo Sommer · desenvolvedor front-end<br>GitHub: Reinoldo · https://github.com/reinoldo</p>
     </section>
 
     <!-- 2. Agenda -->
@@ -557,6 +557,11 @@
       <div class="emoji">🧠</div>
       <div class="kicker">Parte 5 · para pensar juntos</div>
       <h1>Ainda precisamos ler código?</h1>
+      <img
+        class="tweet-shot"
+        src="assets/dont-read-the-code.png"
+        alt="Tweet de Kent C. Dodds: Don't read the code"
+      >
     </section>
 
     <!-- 18. Perguntas de reflexão (sem respostas) -->
@@ -574,54 +579,14 @@
       </div>
     </section>
 
-    <!-- 19. Filósofos 1 -->
-    <section class="slide" data-title="Filósofos 1">
-      <div class="kicker">Dúvida como superpoder</div>
-      <h2>O que a filosofia tem a ver com IA?</h2>
-      <p class="lead">Grandes pensadores ensinaram a <strong>não engolir verdade pronta</strong> — útil demais com respostas de IA.</p>
-      <div class="grid grid-2 philo-grid">
-        <div class="card">
-          <h3>Sócrates</h3>
-          <p class="quote-attr">“Só sei que nada sei”</p>
-          <p>Questionar é inteligência. Perante a IA: “De onde veio isso? Posso testar?”</p>
-        </div>
-        <div class="card">
-          <h3>Platão</h3>
-          <p class="quote-attr">Alegoria da caverna</p>
-          <p>Sombras na parede ≠ realidade. A resposta bonita da IA pode ser só sombra — vá ver o código / a tela de verdade.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 20. Filósofos 2 -->
-    <section class="slide" data-title="Filósofos 2">
-      <div class="kicker">Observar · duvidar · pensar</div>
-      <h2>Mais dois guias mentais</h2>
-      <div class="grid grid-2 philo-grid">
-        <div class="card">
-          <h3>Aristóteles</h3>
-          <p class="quote-attr">Observação + lógica</p>
-          <p>Olhe os fatos (o app rodando, o teste falhando) e encadeie razões. Não aceite “porque a IA falou”.</p>
-        </div>
-        <div class="card">
-          <h3>René Descartes</h3>
-          <p class="quote-attr">Dúvida metódica · “Penso, logo existo”</p>
-          <p>Duvidar com método: questione passo a passo até sobrar o que resiste ao teste. Sua mente crítica continua no centro.</p>
-        </div>
-      </div>
-      <div class="analogy">
-        💡 Resumo teen: use a IA como lanterna — mas <strong>você</strong> escolhe para onde apontar e se confia no que viu.
-      </div>
-    </section>
-
-    <!-- 21. Fechamento -->
+    <!-- 19. Fechamento -->
     <section class="slide title-slide" data-title="Perguntas">
       <div class="emoji">💬</div>
       <div class="kicker">Encerramento</div>
       <h1>Obrigado! Perguntas?</h1>
       <p class="subtitle">
         Reinoldo Sommer · front-end<br>
-        GitHub: Reinoldo · kobtechbr / app-cartao
+        GitHub: Reinoldo · https://github.com/Reinoldo
       </p>
     </section>
 
