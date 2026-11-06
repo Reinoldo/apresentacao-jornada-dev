@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reinoldo Sommer — Minha jornada no frontend</title>
+<style>
+  :root {
+    --bg: #0f1221;
+    --bg-soft: #171b2f;
+    --card: #1e2440;
+    --text: #f4f6ff;
+    --muted: #a8b0d0;
+    --accent: #6c8cff;
+    --accent-2: #7ef0c3;
+    --warn: #ffe566;
+    --warn-bg: rgba(255, 229, 102, 0.18);
+    --warn-border: #e6c200;
+    --pink: #ff7eb6;
+    --orange: #ffb86b;
+    --shadow: 0 20px 60px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 6vw, 5rem);
+    flex-direction: column;
+    justify-content: center;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(108,140,255,.18), transparent 60%),
+      radial-gradient(900px 500px at 100% 100%, rgba(126,240,195,.10), transparent 55%),
+      var(--bg);
+  }
+
+  .slide.active { display: flex; animation: fadeIn .35s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide.title-slide,
+  .slide.section-slide {
+    text-align: center;
+    align-items: center;
+  }
+
+  .kicker {
+    display: inline-block;
+    font-size: .85rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    line-height: 1.1;
+    font-weight: 800;
+    max-width: 16ch;
+  }
+
+  .title-slide h1 { max-width: 18ch; }
+
+  h2 {
+    font-size: clamp(1.7rem, 3.8vw, 2.8rem);
+    line-height: 1.15;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+    max-width: 22ch;
+  }
+
+  .section-slide h1 {
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    max-width: 14ch;
+  }
+
+  .subtitle {
+    margin-top: 1.2rem;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    color: var(--muted);
+    max-width: 36ch;
+    line-height: 1.45;
+  }
+
+  .lead {
+    font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+    color: var(--muted);
+    line-height: 1.5;
+    max-width: 40ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1rem;
+    width: min(100%, 980px);
+  }
+
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.04), transparent), var(--card);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 1.25rem 1.35rem;
+    box-shadow: var(--shadow);
+  }
+
+  .card h3 {
+    font-size: 1.15rem;
+    margin-bottom: .55rem;
+    color: var(--accent-2);
+  }
+
+  .card p, .card li {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  ul.clean {
+    list-style: none;
+    display: grid;
+    gap: .85rem;
+    max-width: 720px;
+  }
+
+  ul.clean li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--muted);
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    line-height: 1.4;
+  }
+
+  ul.clean li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .55em;
+    width: .7rem;
+    height: .7rem;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(108,140,255,.2);
+  }
+
+  .term {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: rgba(108,140,255,.15);
+    color: #c9d6ff;
+    border: 1px solid rgba(108,140,255,.35);
+    border-radius: 999px;
+    padding: .2rem .7rem;
+    font-size: .85rem;
+    font-weight: 700;
+    margin-right: .35rem;
+  }
+
+  .analogy {
+    margin-top: 1.25rem;
+    padding: 1rem 1.2rem;
+    border-left: 4px solid var(--orange);
+    background: rgba(255,184,107,.08);
+    border-radius: 0 14px 14px 0;
+    color: #ffe0b8;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    max-width: 48ch;
+    line-height: 1.45;
+  }
+
+  .placeholder {
+    display: inline;
+    background: var(--warn);
+    color: #1a1400;
+    border: 2px dashed var(--warn-border);
+    border-radius: 8px;
+    padding: .15rem .45rem;
+    font-weight: 800;
+    box-shadow: 0 0 0 3px var(--warn-bg);
+  }
+
+  .placeholder-block {
+    background: var(--warn);
+    color: #1a1400;
+    border: 2px dashed var(--warn-border);
+    border-radius: 12px;
+    padding: .9rem 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    box-shadow: 0 0 0 4px var(--warn-bg);
+  }
+
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: center;
+    margin-top: .5rem;
+  }
+
+  .flow .step {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px;
+    padding: .85rem 1rem;
+    min-width: 140px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .flow .arrow {
+    color: var(--accent-2);
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+
+  .quote {
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1.3;
+    max-width: 22ch;
+    margin-bottom: 1rem;
+  }
+
+  .quote-attr {
+    color: var(--accent-2);
+    font-weight: 700;
+    letter-spacing: .04em;
+  }
+
+  .philo-grid .card h3 { color: var(--pink); }
+
+  .big-q {
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.25;
+    max-width: 18ch;
+  }
+
+  .footer-meta {
+    position: absolute;
+    left: clamp(1.5rem, 6vw, 5rem);
+    right: clamp(1.5rem, 6vw, 5rem);
+    bottom: 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: .9rem;
+    pointer-events: none;
+  }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: rgba(255,255,255,.08);
+  }
+
+  .progress > span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width .25s ease;
+  }
+
+  .nav-hint {
+    opacity: .7;
+  }
+
+  .emoji {
+    font-size: 2.2rem;
+    margin-bottom: .8rem;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 1.5rem;
+    align-items: start;
+    width: min(100%, 980px);
+  }
+
+  @media (max-width: 800px) {
+    .two-col { grid-template-columns: 1fr; }
+    .flow .arrow { display: none; }
+  }
+
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: 1rem 0 1.2rem;
+  }
+
+  .badge {
+    background: rgba(126,240,195,.12);
+    color: var(--accent-2);
+    border: 1px solid rgba(126,240,195,.3);
+    border-radius: 999px;
+    padding: .35rem .8rem;
+    font-size: .9rem;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <!-- 1. Título -->
+    <section class="slide title-slide active" data-title="Capa">
+      <div class="kicker">Papo com adolescentes · Frontend · IA</div>
+      <h1>Como eu construo telas (e uso IA sem “desligar o cérebro”)</h1>
+      <p class="subtitle">Reinoldo Sommer · desenvolvedor front-end<br>GitHub: Reinoldo · org: kobtechbr · projeto: app-cartao</p>
+    </section>
+
+    <!-- 2. Agenda -->
+    <section class="slide" data-title="O que vamos ver">
+      <div class="kicker">Roteiro</div>
+      <h2>Hoje a gente vai falar de…</h2>
+      <ul class="clean">
+        <li>Quem eu sou e como cheguei até aqui</li>
+        <li>O que é <strong>frontend</strong> (em português claro)</li>
+        <li>Como é meu dia a dia na empresa</li>
+        <li>Como a <strong>IA</strong> me ajuda — e onde ela erra</li>
+        <li>Uma reflexão: ainda precisamos ler código?</li>
+        <li>Perguntas no final 🙌</li>
+      </ul>
+    </section>
+
+    <!-- 3. Prompt oral: Minha jornada -->
+    <section class="slide section-slide" data-title="Minha jornada">
+      <div class="emoji">🌱</div>
+      <div class="kicker">Parte 1 · história ao vivo</div>
+      <h1>Minha jornada</h1>
+    </section>
+
+    <!-- 4. Prompt oral: Como cheguei aqui -->
+    <section class="slide section-slide" data-title="Como cheguei aqui">
+      <div class="emoji">🗺️</div>
+      <div class="kicker">História ao vivo</div>
+      <h1>Como cheguei aqui</h1>
+    </section>
+
+    <!-- 5. Seção: frontend -->
+    <section class="slide section-slide" data-title="Seção Frontend">
+      <div class="emoji">🎨</div>
+      <div class="kicker">Parte 2</div>
+      <h1>Frontend</h1>
+      <p class="subtitle">Primeiro: o que diabos é isso?</p>
+    </section>
+
+    <!-- 6. O que é frontend -->
+    <section class="slide" data-title="O que é frontend">
+      <div class="kicker">Palavra nova</div>
+      <h2>
+        <span class="term">Frontend</span>
+        = a “fachada” do app
+      </h2>
+      <p class="lead">É tudo que a pessoa <strong>vê, clica e digita</strong>. Botão, menu, tela de login, animação…</p>
+      <div class="analogy">
+        🍔 Analogia: no restaurante, o <strong>frontend</strong> é o salão + cardápio + garçom.
+        A cozinha (onde a comida é preparada “por trás”) é outra área — o <em>backend</em>.
+      </div>
+      <p style="margin-top:1.2rem;color:var(--muted);max-width:42ch;line-height:1.45">
+        Eu cuido para o salão ficar bonito, claro e fácil de usar — sem a pessoa precisar saber o que acontece na cozinha.
+      </p>
+    </section>
+
+    <!-- 7. Prompt oral: Por que frontend -->
+    <section class="slide section-slide" data-title="Por que frontend?">
+      <div class="emoji">💭</div>
+      <div class="kicker">História ao vivo</div>
+      <h1>Por que frontend?</h1>
+    </section>
+
+    <!-- 8. Seção: empresa -->
+    <section class="slide section-slide" data-title="Seção Empresa">
+      <div class="emoji">🏢</div>
+      <div class="kicker">Parte 3</div>
+      <h1>O que eu faço na empresa</h1>
+      <p class="subtitle">Do pedido até a tela no celular</p>
+    </section>
+
+    <!-- 9. App-cartao -->
+    <section class="slide" data-title="App-cartao">
+      <div class="kicker">Projeto</div>
+      <h2>app-cartao · 3 frontends</h2>
+      <p class="lead">É um app de cartão. Em vez de um único “site”, temos três frentes — cada uma para um tipo de pessoa:</p>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>App</h3>
+          <p>O que o cliente final usa no dia a dia (tipo o app no celular).</p>
+        </div>
+        <div class="card">
+          <h3>Ops</h3>
+          <p>Telas para a equipe operacional cuidar do negócio “por dentro”.</p>
+        </div>
+        <div class="card">
+          <h3>Auth</h3>
+          <p>A parte de <strong>entrar com segurança</strong> — login, senha, “provar quem você é”.</p>
+        </div>
+      </div>
+      <div class="analogy">
+        🏫 Analogia: uma escola tem a sala do aluno, a secretaria e a catraca da entrada.
+        Três “portas”, três necessidades — mesmo “prédio”.
+      </div>
+    </section>
+
+    <!-- 10. Fluxo (conceitos) -->
+    <section class="slide" data-title="Fluxo de trabalho">
+      <div class="kicker">Como o trabalho flui</div>
+      <h2>Do pedido até “ir pro ar”</h2>
+      <div class="flow">
+        <div class="step">1. Pedido / ideia</div>
+        <div class="arrow">→</div>
+        <div class="step">2. Issue</div>
+        <div class="arrow">→</div>
+        <div class="step">3. Código</div>
+        <div class="arrow">→</div>
+        <div class="step">4. Teste</div>
+        <div class="arrow">→</div>
+        <div class="step">5. Vai pro ar</div>
+      </div>
+      <p style="margin:1.4rem 0 0;color:var(--muted);max-width:48ch;line-height:1.45">
+        <span class="term">Issue</span>
+        = um “pedido de tarefa” escrito (tipo um bilhete organizado): o que fazer, por quê, e quando está pronto.
+      </p>
+    </section>
+
+    <!-- 11. Prompt oral: Meu dia a dia -->
+    <section class="slide section-slide" data-title="Meu dia a dia">
+      <div class="emoji">☀️</div>
+      <div class="kicker">História ao vivo</div>
+      <h1>Meu dia a dia</h1>
+    </section>
+
+    <!-- 12. Seção: IA -->
+    <section class="slide section-slide" data-title="Seção IA">
+      <div class="emoji">🤖</div>
+      <div class="kicker">Parte 4</div>
+      <h1>Como eu uso IA no meu fluxo</h1>
+      <p class="subtitle">A IA é um estagiário muito rápido — e às vezes confiante demais.</p>
+    </section>
+
+    <!-- 13. O que é IA / LLM + Cursor -->
+    <section class="slide" data-title="IA, LLM e Cursor">
+      <div class="kicker">Palavras novas</div>
+      <h2>IA, LLM e a ferramenta que eu uso</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3><span class="term">IA</span> Inteligência Artificial</h3>
+          <p>Programas que tentam fazer coisas que a gente associa a “pensar”: escrever texto, sugerir código, desenhar tela.</p>
+        </div>
+        <div class="card">
+          <h3><span class="term">LLM</span> modelo de linguagem</h3>
+          <p>Uma IA treinada em montanhas de texto. Ela prevê a próxima palavra — por isso escreve tão bem… e às vezes inventa.</p>
+        </div>
+      </div>
+      <div class="analogy">
+        📚 Analogia: é como um aluno que leu a biblioteca inteira e responde rápido.
+        Ele pode soar certo e ainda assim estar errado. Por isso a gente <strong>revisa</strong>.
+      </div>
+      <div class="card" style="margin-top:1.1rem;max-width:720px">
+        <h3>Eu uso o <strong style="color:var(--text)">Cursor</strong></h3>
+        <p>É o editor onde eu programo <em>com</em> a IA. Nele eu peço ajuda para: testes unitários, testes E2E, criar issues, designar issues para a LLM, e usar a Impeccable no design.</p>
+      </div>
+    </section>
+
+    <!-- 14. Testes -->
+    <section class="slide" data-title="Testes automatizados">
+      <div class="kicker">No Cursor, a IA me ajuda a…</div>
+      <h2>Criar testes automatizados</h2>
+      <p class="lead">
+        <span class="term">Teste automatizado</span>
+        = um “robôzinho” que clica / checa o app por mim, toda vez que mudo algo.
+      </p>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Testes unitários</h3>
+          <p>Testam uma peça pequena isolada — tipo conferir se um botão de “somar” realmente soma 2+2.</p>
+          <div class="analogy" style="margin-top:.8rem">🧩 Peça do Lego, sozinha.</div>
+        </div>
+        <div class="card">
+          <h3><span class="term">E2E</span> ponta a ponta</h3>
+          <p>Simula uma pessoa de verdade: abrir o app, fazer login, completar um fluxo inteiro.</p>
+          <div class="analogy" style="margin-top:.8rem">🎬 Filme completo, não só uma cena.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. Issues para LLM -->
+    <section class="slide" data-title="Issues para a LLM">
+      <div class="kicker">No Cursor, a IA me ajuda a…</div>
+      <h2>Criar issues e passar para a LLM</h2>
+      <ul class="clean">
+        <li>No Cursor, eu escrevo (ou peço à IA para rascunhar) uma <strong>issue</strong> clara: o problema, o objetivo, o “pronto quando…”.</li>
+        <li>Depois <strong>designo</strong> essa issue para a LLM — ou seja, peço para a IA atacar aquela tarefa.</li>
+        <li>Eu continuo no comando: leio o resultado, testo, corrijo, aprovo.</li>
+      </ul>
+      <div class="analogy">
+        🎮 Analogia: eu sou o jogador; a IA é um personagem NPC bem esperto.
+        Eu escolho a missão. Ela tenta executar. Eu vejo se valeu.
+      </div>
+    </section>
+
+    <!-- 16. Impeccable -->
+    <section class="slide" data-title="Impeccable">
+      <div class="kicker">Design com IA · impeccable.style</div>
+      <h2>Harness de design: Impeccable</h2>
+      <p class="lead">Skill <strong>gratuita</strong> que eu uso no Cursor: ensina vocabulário de design para a IA — e caça “cara de IA genérica” na interface.</p>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>O que ela faz</h3>
+          <p>Comandos tipo <strong>/impeccable polish</strong>, <strong>audit</strong>, <strong>typeset</strong>. Mantém arquivos <strong>DESIGN.md</strong> e <strong>PRODUCT.md</strong> para a IA não “esquecer” o visual do produto.</p>
+        </div>
+        <div class="card">
+          <h3>“AI slop” = cara de template</h3>
+          <p>Aquelas telas bege, fonte itálica aleatória, cards iguais demais… a Impeccable ajuda a detectar e limpar isso.</p>
+        </div>
+      </div>
+      <p class="placeholder-block" style="margin-top:1.1rem;max-width:720px">
+        [PREENCHER: exemplo real Impeccable antes/depois no app-cartao ou outro projeto]
+      </p>
+    </section>
+
+    <!-- 17. Seção: reflexão (só pergunta) -->
+    <section class="slide section-slide" data-title="Reflexão">
+      <div class="emoji">🧠</div>
+      <div class="kicker">Parte 5 · para pensar juntos</div>
+      <h1>Ainda precisamos ler código?</h1>
+    </section>
+
+    <!-- 18. Perguntas de reflexão (sem respostas) -->
+    <section class="slide" data-title="Perguntas para refletir">
+      <div class="kicker">Sem resposta pronta — só perguntas</div>
+      <h2>Na era da IA…</h2>
+      <ul class="clean">
+        <li>Ainda precisamos <strong>ler</strong> código?</li>
+        <li>Código “macarronada” (embolado, sem ordem) ainda faz diferença?</li>
+        <li>Toda a organização que fazemos para facilitar a leitura… ainda importa?</li>
+      </ul>
+      <div class="analogy">
+        🍝 “Macarronada” = código embolado, difícil de seguir.
+        A pergunta fica no ar — vamos conversar.
+      </div>
+    </section>
+
+    <!-- 19. Filósofos 1 -->
+    <section class="slide" data-title="Filósofos 1">
+      <div class="kicker">Dúvida como superpoder</div>
+      <h2>O que a filosofia tem a ver com IA?</h2>
+      <p class="lead">Grandes pensadores ensinaram a <strong>não engolir verdade pronta</strong> — útil demais com respostas de IA.</p>
+      <div class="grid grid-2 philo-grid">
+        <div class="card">
+          <h3>Sócrates</h3>
+          <p class="quote-attr">“Só sei que nada sei”</p>
+          <p>Questionar é inteligência. Perante a IA: “De onde veio isso? Posso testar?”</p>
+        </div>
+        <div class="card">
+          <h3>Platão</h3>
+          <p class="quote-attr">Alegoria da caverna</p>
+          <p>Sombras na parede ≠ realidade. A resposta bonita da IA pode ser só sombra — vá ver o código / a tela de verdade.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20. Filósofos 2 -->
+    <section class="slide" data-title="Filósofos 2">
+      <div class="kicker">Observar · duvidar · pensar</div>
+      <h2>Mais dois guias mentais</h2>
+      <div class="grid grid-2 philo-grid">
+        <div class="card">
+          <h3>Aristóteles</h3>
+          <p class="quote-attr">Observação + lógica</p>
+          <p>Olhe os fatos (o app rodando, o teste falhando) e encadeie razões. Não aceite “porque a IA falou”.</p>
+        </div>
+        <div class="card">
+          <h3>René Descartes</h3>
+          <p class="quote-attr">Dúvida metódica · “Penso, logo existo”</p>
+          <p>Duvidar com método: questione passo a passo até sobrar o que resiste ao teste. Sua mente crítica continua no centro.</p>
+        </div>
+      </div>
+      <div class="analogy">
+        💡 Resumo teen: use a IA como lanterna — mas <strong>você</strong> escolhe para onde apontar e se confia no que viu.
+      </div>
+    </section>
+
+    <!-- 21. Fechamento -->
+    <section class="slide title-slide" data-title="Perguntas">
+      <div class="emoji">💬</div>
+      <div class="kicker">Encerramento</div>
+      <h1>Obrigado! Perguntas?</h1>
+      <p class="subtitle">
+        Reinoldo Sommer · front-end<br>
+        GitHub: Reinoldo · kobtechbr / app-cartao
+      </p>
+    </section>
+
+  </div>
+
+  <div class="footer-meta">
+    <span class="nav-hint">← → ou clique · Esc início</span>
+    <span id="counter">1 / 1</span>
+  </div>
+  <div class="progress"><span id="bar"></span></div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const counter = document.getElementById('counter');
+  const bar = document.getElementById('bar');
+  let i = 0;
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    document.title = (slides[i].dataset.title || 'Slide') + ' · Reinoldo Sommer';
+  }
+
+  function next() { show(i + 1); }
+  function prev() { show(i - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault(); next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault(); prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); show(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); show(slides.length - 1);
+    } else if (e.key === 'Escape') {
+      show(0);
+    }
+  });
+
+  document.getElementById('deck').addEventListener('click', (e) => {
+    if (e.target.closest('a, button, input, textarea')) return;
+    const mid = window.innerWidth / 2;
+    if (e.clientX >= mid) next();
+    else prev();
+  });
+
+  let touchX = null;
+  document.addEventListener('touchstart', (e) => {
+    touchX = e.changedTouches[0].screenX;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (touchX == null) return;
+    const dx = e.changedTouches[0].screenX - touchX;
+    if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
+    touchX = null;
+  }, { passive: true });
+
+  show(0);
+})();
+</script>
+</body>
+</html>
